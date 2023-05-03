@@ -17,86 +17,20 @@ spec:
       serviceAccountName: workload-identity-ksa
       nodeSelector:
         iam.gke.io/gke-metadata-server-enabled: "true"
-      # initContainers:
-      # - name: init-disk
-      #   image: gcr.io/google.com/cloudsdktool/cloud-sdk
-      #   #command: ["gcloud compute disks create sd-lib-disk --type=pd-balanced --size=30GB --zone=us-central1-c --source-snapshot=projects/flius-vpc-2/global/snapshots/snapshot-1; gcloud compute instances attach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c"]
-      #   command: ["sh", "-c"]
-      #   # args:
-      #   #   - gcloud init;
-      #   #     gcloud auth list
-      #   args: 
-      #   - mkdir /var/lib/runtime-lib;
-      #     gcloud compute instances detach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c;
-      #     gcloud compute instances attach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c;
-      #     mount -o discard,defaults /dev/sdb /var/lib/runtime-lib
-      #   volumeMounts:
-      #   - mountPath: "/runtime-lib"
-      #     name: runtime-lib
-      #   env:
-      #     - name: MY_NODE_NAME
-      #       valueFrom:
-      #         fieldRef:
-      #           fieldPath: spec.nodeName
-      #   securityContext:
-      #     privileged: true
-      #   # resources:
-      #   #   limits:
-      #   #     nvidia.com/gpu: 1
       volumes:
       - name: runtime-lib
-        hostPath: 
+        hostPath:
           path: /var/lib/runtime-lib
-      # initContainers:
-      # - name: init-disk
-      #   image: gcr.io/google.com/cloudsdktool/cloud-sdk
-      #   #command: ["gcloud compute disks create sd-lib-disk --type=pd-balanced --size=30GB --zone=us-central1-c --source-snapshot=projects/flius-vpc-2/global/snapshots/snapshot-1; gcloud compute instances attach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c"]
-      #   command: ["sh", "-c"]
-      #   # args:
-      #   #   - gcloud init;
-      #   #     gcloud auth list
-      #   args: 
-      #   - gcloud compute disks create sd-lib-disk --type=pd-balanced --size=30GB --zone=us-central1-c --source-snapshot=projects/flius-vpc-2/global/snapshots/snapshot-1;
-      #     gcloud compute instances attach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c;
-      #     mount -o discard,defaults /dev/sdb /runtime-lib
-      #   volumeMounts:
-      #   - mountPath: "/runtime-lib"
-      #     name: runtime-lib
-      #   env:
-      #     - name: MY_NODE_NAME
-      #       valueFrom:
-      #         fieldRef:
-      #           fieldPath: spec.nodeName
-      #   securityContext:
-      #     privileged: true
       containers:
-      # - name: init-disk
-      #   image: gcr.io/google.com/cloudsdktool/cloud-sdk
-      #   command: ["sh", "-c"]
-      #   args: 
-      #   - gcloud compute disks create sd-lib-disk --type=pd-balanced --size=30GB --zone=us-central1-c --source-snapshot=projects/flius-vpc-2/global/snapshots/snapshot-1;
-      #     gcloud compute instances attach-disk ${MY_NODE_NAME} --disk=projects/flius-vpc-2/zones/us-central1-c/disks/sd-lib-disk --zone=us-central1-c;
-      #     mount -o discard,defaults /dev/sdb /runtime-lib;
-      #     while true; do sleep 100; done
-      #   volumeMounts:
-      #   - mountPath: "/runtime-lib"
-      #     name: runtime-lib
-      #   env:
-      #     - name: MY_NODE_NAME
-      #       valueFrom:
-      #         fieldRef:
-      #           fieldPath: spec.nodeName
-      #   securityContext:
-      #     privileged: true
       - name: stable-diffusion-webui
         image: us-central1-docker.pkg.dev/flius-vpc-2/stable-diffusion-repo/sd-webui-final:0.1
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
-        args: 
+        args:
         - source /runtime-lib/bin/activate;
-          cp /user-watch.py /runtime-lib/stable-diffusion-webui/user-watch.py; 
-          cp /start.sh /runtime-lib/stable-diffusion-webui/user-watch.py; 
-          cd /runtime-lib/stable-diffusion-webui;  
+          cp /user-watch.py /runtime-lib/stable-diffusion-webui/user-watch.py;
+          cp /start.sh /runtime-lib/stable-diffusion-webui/user-watch.py;
+          cd /runtime-lib/stable-diffusion-webui;
           python3 launch.py --listen --xformers --enable-insecure-extension-access --no-gradio-queue
         volumeMounts:
           - mountPath: "/runtime-lib"
@@ -111,5 +45,5 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-        securityContext:
-          privileged: true
+        # securityContext:
+        #   privileged: true
