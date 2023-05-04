@@ -1,18 +1,20 @@
 
-User Guide
+# User Guide
 
 * Set Environment Variables
-```
-SOURCE_PROJECT_ID=flius-vpc-2
-IMAGE_NAME=sd-image
-PROJECT_ID=project-kangwe-poc
-ZONE=us-central1-c
-CLUSTER_NAME=dpv2-test
-```
+  ```
+  SOURCE_PROJECT_ID=flius-vpc-2
+  IMAGE_NAME=sd-image
+  PROJECT_ID=project-kangwe-poc
+  ZONE=us-central1-c
+  CLUSTER_NAME=dpv2-test
+  ```
 * Copy Image to your project
-```
-gcloud compute images create sd-image --source-image=projects/${SOURCE_PROJECT_ID}/global/images/${IMAGE_NAME} --project=${PROJECT_ID}
-```
+  ```
+  gcloud compute images create sd-image \
+  --source-image=projects/${SOURCE_PROJECT_ID}/global/images/${IMAGE_NAME} \
+  --project=${PROJECT_ID}
+  ```
 * Enable Workload identity
 ```
 gcloud container clusters create ${CLUSTER_NAME} \
